@@ -9,7 +9,7 @@
 #  description :text
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  conflict_id :integer
+#  status      :string(255)
 #
 
 require 'spec_helper'

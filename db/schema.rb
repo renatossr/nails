@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130807035642) do
+ActiveRecord::Schema.define(:version => 20130807045006) do
 
   create_table "reservations", :force => true do |t|
     t.datetime "start_time"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(:version => 20130807035642) do
     t.text     "description"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
-    t.integer  "conflict_id"
+    t.string   "status"
   end
 
 end
