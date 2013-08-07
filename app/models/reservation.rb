@@ -32,14 +32,14 @@ class Reservation < ActiveRecord::Base
 
   # Cycles through reservations with conflict and cancels them
   def cancel_reservations_in_unavailable_time
-  	if self.type_flag = "NotAvailable"
-  		Reservations.conflict( self ).each { |o| o.cancel }	
+  	if self.type_flag == "NotAvailable"
+  		Reservation.conflicts( self ).each { |o| o.cancel }	
   	end
 	end
 
 	# Retrieves conflicted reservations given a reservation passed as argument
 	def Reservation::conflicts(reservation)
-		Reservation.where('id <> ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?))', reservation.id, reservation.start_time, reservation.start_time, reservation.end_time, reservaton.end_time)
+		Reservation.where('id <> ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?))', reservation.id, reservation.start_time, reservation.start_time, reservation.end_time, reservation.end_time)
 	end
 
 	# Cancels reservations by changing status to 'Canceled'
