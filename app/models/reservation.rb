@@ -23,7 +23,7 @@ class Reservation < ActiveRecord::Base
   after_save :cancel_reservations_in_my_range, :if => :is_unavailable_and_has_conflicts?
 
   scope :only_of_day, 				->(day) { where('start_time BETWEEN ? AND ?', day.beginning_of_day, day.end_of_day) }
-  scope :only_of_period, 			->(day1, day2) { where('start_time BETWEEN ? AND ?', day1.beginning_of_day, day2.end_of_day) }
+  scope :only_of_period, 			->(start_day, end_day) { where('start_time BETWEEN ? AND ?', start_day.beginning_of_day, end_day.end_of_day) }
   scope :only_of_type, 				->(type) { where('type_flag = ?', type) }
   scope :conflicts_with, 			->(reservation) { Reservation.where('id <> ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?))', reservation.id, reservation.start_time, reservation.start_time, reservation.end_time, reservation.end_time) }
 
