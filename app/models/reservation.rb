@@ -18,28 +18,43 @@ class Reservation < ActiveRecord::Base
   validates :start_time, 	presence: true
   validates :end_time,		presence: true
   validates_inclusion_of :type_flag, :in => ["Reservation", "NotAvailable"]
+  validate :cannot_have_conflicts, on: :create
 
-  after_save :cancel_reservations_in_unavailable_time
+  after_save :cancel_reservations_in_my_range, :if => :is_unavailable_and_has_conflicts?
 
-  scope :only_of_date, ->(day) { where('start_time BETWEEN ? AND ?', day.beginning_of_day, day.end_of_day) }
-  scope :only_of_type, ->(type) { where('type_flag = ?', type) }
+  scope :only_of_day, 				->(day) { where('start_time BETWEEN ? AND ?', day.beginning_of_day, day.end_of_day) }
+  scope :only_of_period, 			->(day1, day2) { where('start_time BETWEEN ? AND ?', day1.beginning_of_day, day2.end_of_day) }
+  scope :only_of_type, 				->(type) { where('type_flag = ?', type) }
+  scope :conflicts_with, 			->(reservation) { Reservation.where('id <> ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?))', reservation.id, reservation.start_time, reservation.start_time, reservation.end_time, reservation.end_time) }
 
-
-  # Checks for conflicts with other reservations.
-  def has_conflicts?
-	  Reservation.where('id <> ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?))', self.id, self.start_time, self.start_time, self.end_time, self.end_time).any?
+  # Validation method for conflicts
+  def cannot_have_conflicts
+  	errors.add(:base, "Conflicts with another reservation") if self.has_conflicts?
   end
 
-  # Cycles through reservations with conflict and cancels them
-  def cancel_reservations_in_unavailable_time
-  	if self.type_flag == "NotAvailable"
-  		Reservation.conflicts( self ).each { |o| o.cancel }	
-  	end
-	end
+  # Check flag for NotAvailable
+  def is_unavailable?
+  	self.type_flag == "NotAvailable"
+  end
 
-	# Retrieves conflicted reservations given a reservation passed as argument
-	def Reservation::conflicts(reservation)
-		Reservation.where('id <> ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?))', reservation.id, reservation.start_time, reservation.start_time, reservation.end_time, reservation.end_time)
+  # Checks for conflicts
+  def has_conflicts?
+  	self.conflicts.any?
+  end
+
+  # Check for unavailability and conflicts
+  def is_unavailable_and_has_conflicts?
+  	self.is_unavailable? && self.has_conflicts?
+  end
+
+  # Retrieve conflicting reservations
+  def conflicts
+	  Reservation.conflicts_with(self)
+  end
+
+  # Cycle through reservations with conflict and cancels them
+  def cancel_reservations_in_my_range
+  	self.conflicts.each { |o| o.cancel }	
 	end
 
 	# Cancels reservations by changing status to 'Canceled'
@@ -47,7 +62,5 @@ class Reservation < ActiveRecord::Base
 		self.status = 'Canceled'
 		self.save
 	end
-
-	private
 
 end
