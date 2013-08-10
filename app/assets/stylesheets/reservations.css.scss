@@ -9,8 +9,8 @@
   td, th {
     font-family: "Lucida Grande", arial, helvetica, sans-serif;
     font-size: 10px;
-    padding: 6px;
-    border: 1px solid #999;
+    padding: 0 2px;
+    border: 1px solid #CCC;
   }
 
   th {
@@ -36,6 +36,23 @@
 
   .notmonth, .notmonth a { color: #CCC; }
   .today { background-color: #D7F2FF; }
+}
+
+.reservation{
+  background: #F58C9F;
+  border: solid 1px #B3364D;
+  margin: 5px 0;
+  padding: 5px;
+  color: #96293D;
+  font-size: 10px;
+  line-height: 150%;
+  border-radius: 3px;
+
+  a{
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+  }
 }
 
 #reservations #month {
