@@ -15,7 +15,7 @@
 require 'spec_helper'
 
 describe Reservation do
-  before { @reservation = Reservation.new(start_time: "2013-12-12 10:00am", end_time: "2013-12-12 10:30am", kind: "Reserved", description: "") }
+  before { @reservation = Reservation.new(start_time: "2013-12-12 10:00am", end_time: "2013-12-12 10:30am", kind: "Reservation", description: "") }
   
   subject { @reservation }
   
@@ -23,7 +23,7 @@ describe Reservation do
   it { should respond_to(:end_time) }
   it { should respond_to(:kind) }
   it { should respond_to(:description) }
-  it { should respond_to(:conflict_id) }
+  it { should respond_to(:status) }
 
   it { should be_valid }
 
