@@ -34,12 +34,12 @@ module CalendarHelper
     end
 
     def time_rows
-      hours.map do |hour|
-        hour = DateTime.parse("#{hour}:00:00")
+      ((hours.first*2*30)..(hours.last*2*30)).step(30).map do |minutes|
+      # hours.map do |hour|
         content = []
-        content << content_tag(:td, hour.strftime('%H:%M'))
+        content << content_tag(:td, (Date.today.beginning_of_day+(minutes).minutes).strftime('%H:%M'))
         content_tag :tr do
-          content << week.map { |week| time_cell(hour) }.join.html_safe
+          content << week.map { |day| time_cell( (day.to_time.beginning_of_day+(minutes).minutes).to_i/(30*60)) }.join.html_safe
           content.join.html_safe
         end
       end.join.html_safe
@@ -77,5 +77,6 @@ module CalendarHelper
       last = 21
       (first..last).to_a
     end
+
   end
 end

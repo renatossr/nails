@@ -5,7 +5,7 @@
 #  id          :integer          not null, primary key
 #  start_time  :datetime
 #  end_time    :datetime
-#  king        :string(255)
+#  kind        :string(255)
 #  description :text
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
@@ -17,7 +17,7 @@ class Reservation < ActiveRecord::Base
 
   validates :start_time, 	presence: true
   validates :end_time,		presence: true
-  validates_inclusion_of :kind, :in => ["Reservation", "NotAvailable"]
+  validates_inclusion_of :kind, :in => proc { Reservation.kinds_of_reservation }
   validate :cannot_have_conflicts, on: :create
 
   after_save :cancel_reservations_in_my_range, :if => :is_unavailable_and_has_conflicts?
@@ -26,6 +26,7 @@ class Reservation < ActiveRecord::Base
   scope :only_of_period, 			->(start_day, end_day) { where('start_time BETWEEN ? AND ?', start_day.beginning_of_day, end_day.end_of_day) }
   scope :only_of_kind, 				->(kind) { where('kind = ?', kind) }
   scope :conflicts_with, 			->(reservation) { Reservation.where('id <> ? AND ((start_time <= ? AND end_time >= ?) OR (start_time <= ? AND end_time >= ?))', reservation.id, reservation.start_time, reservation.start_time, reservation.end_time, reservation.end_time) }
+
 
   # Validation method for conflicts
   def cannot_have_conflicts
@@ -62,5 +63,19 @@ class Reservation < ActiveRecord::Base
 		self.status = 'Canceled'
 		self.save
 	end
+
+  class << self
+    def kinds_of_reservation
+      ["Reservation","NotAvailable"]
+    end
+
+    def grouped_by_half_hours
+      all.group_by { |r| r.start_time.to_i/(60*30) }
+    end
+
+    def with_default_ordering
+      order(:start_time)
+    end
+  end
 
 end
