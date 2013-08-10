@@ -6,7 +6,7 @@
     @reservations[time].try(:each) do |m|
   %>
   <div style="font-size:11px;border-bottom:1px solid #CCC;padding-bottom:5px;margin-bottom:5px;">
-    <%= m.id %><br />
+    <%= link_to m.id, m %><br />
     <%= m.start_time.strftime("%H:%M") %> a <%= m.end_time.strftime("%H:%M") %>
     <%= m.kind %>
     <%= m.status %>

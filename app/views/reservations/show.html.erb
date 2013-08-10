@@ -1,0 +1,6 @@
+<div style="font-size:11px;border-bottom:1px solid #CCC;padding-bottom:5px;margin-bottom:5px;">
+  <%= @reservation.id %><br />
+  <%= @reservation.start_time.strftime("%H:%M") %> a <%= @reservation.end_time.strftime("%H:%M") %>
+  <%= @reservation.kind %>
+  <%= @reservation.status %>
+</div>

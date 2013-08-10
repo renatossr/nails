@@ -1,4 +1,6 @@
 Nails::Application.routes.draw do
+
+  resources :reservations
   get "reservations" => 'reservations#index'
 
   # The priority is based upon order of creation:

@@ -4,6 +4,9 @@ class ReservationsController < ApplicationController
       Date.today-5.days,
       Date.today+5.days
     ).with_default_ordering.grouped_by_half_hours
-  	#@reservations_by_hour = @reservations.group("strftime('%H:%M', start_time)")
+  end
+
+  def show
+    @reservation = Reservation.find(params[:id])
   end
 end
