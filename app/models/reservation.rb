@@ -88,10 +88,9 @@ class Reservation < ActiveRecord::Base
       all.group_by { |r| r.start_time.to_i/(30.minutes) }
     end
 
-
-    def grouped_by_30_min
+    def grouped_by_interval( range  )
       grouped = Hash.new {|h,k| h[k] = [] }
-      all.each { |r| r.period_in_seconds.step(30.minutes) { |i| grouped[i/(30.minutes)] << r } }
+      all.each { |r| r.period_in_seconds.step( range  ) { |i| grouped[i/(range)] << r } }
       grouped
     end
 
