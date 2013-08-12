@@ -75,13 +75,24 @@ class Reservation < ActiveRecord::Base
 		self.save(validate: false)
 	end
 
+  def period_in_seconds
+    (start_time.to_i..end_time.to_i)
+  end
+
   class << self
     def kinds_of_reservation
       ["Reservation","NotAvailable"]
     end
 
     def grouped_by_half_hours
-      all.group_by { |r| r.start_time.to_i/(60*30) }
+      all.group_by { |r| r.start_time.to_i/(30.minutes) }
+    end
+
+
+    def grouped_by_30_min
+      grouped = Hash.new {|h,k| h[k] = [] }
+      all.each { |r| r.period_in_seconds.step(30.minutes) { |i| grouped[i/(30.minutes)] << r } }
+      grouped
     end
 
     def with_default_ordering
