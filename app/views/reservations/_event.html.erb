@@ -1,0 +1,9 @@
+<% left   = 110 + ( (r.start_time - (Date.today.beginning_of_day+7.hours) ) / (30*60) )*25 %>
+<% width  = ( (r.end_time - r.start_time) / (30*60) ) * 25 %>
+
+
+<%=  content_tag :div, 
+                  r.id, 
+                  class:"event #{r.kind.underscore.dasherize}",
+                  style:"left: #{left}px; width: #{width}px;"
+%>

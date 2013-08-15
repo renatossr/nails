@@ -1,9 +1,6 @@
 class ReservationsController < ApplicationController
   def index
-  	@reservations = Reservation.only_of_period(
-      Date.today-5.days,
-      Date.today+5.days
-    ).with_default_ordering.grouped_by_half_hours
+  	@reservations = Reservation.only_of_day(Date.today).status_different_than("Canceled").with_default_ordering
   end
 
   def show

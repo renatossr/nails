@@ -75,25 +75,26 @@ class Reservation < ActiveRecord::Base
 		self.save(validate: false)
 	end
 
+  # Retrieves the total period of the reservation in seconds
   def period_in_seconds
     (start_time.to_i..end_time.to_i)
   end
 
   class << self
+
+    # Returns the available kinds of reservation
     def kinds_of_reservation
       ["Reservation","NotAvailable"]
     end
 
-    def grouped_by_half_hours
-      all.group_by { |r| r.start_time.to_i/(30.minutes) }
-    end
-
-    def grouped_by_interval( range  )
+    # Groups the reservations by interval - One reservation fills all the intervals between start and end time.
+    def grouped_by_interval( range )
       grouped = Hash.new {|h,k| h[k] = [] }
-      all.each { |r| r.period_in_seconds.step( range  ) { |i| grouped[i/(range)] << r } }
+      all.each { |r| r.period_in_seconds.step( range ) { |i| grouped[i/(range)] << r } }
       grouped
     end
 
+    # Returns the default ordering
     def with_default_ordering
       order(:start_time)
     end

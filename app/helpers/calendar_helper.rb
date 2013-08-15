@@ -35,7 +35,6 @@ module CalendarHelper
 
     def time_rows
       ((hours.first*2*30)..(hours.last*2*30)).step(30).map do |minutes|
-      # hours.map do |hour|
         content = []
         content << content_tag(:td, (Date.today.beginning_of_day+(minutes).minutes).strftime('%H:%M'))
         content_tag :tr do
@@ -50,7 +49,7 @@ module CalendarHelper
     end
 
     def time_cell(time)
-      content_tag :td, view.capture(time, &callback)
+      content_tag :td, view.capture(time, &callback), class: time_classes(time)
     end
 
     def week_day_classes(day)

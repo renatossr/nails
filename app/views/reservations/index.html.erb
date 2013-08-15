@@ -1,16 +1,30 @@
+<section id="calendar">
 
-
-<div id="reservations">
-  <%= calendar do |time| %>
-    <%
-    @reservations[time].try(:each) do |m|
-  %>
-  <div class="reservation">
-    <%= link_to m.id, m %><br />
-    <%= m.start_time.strftime("%H:%M") %> a <%= m.end_time.strftime("%H:%M") %>
-    <%= m.kind %>
-    <%= m.status %>
+  <div class="day">
+    <table>
+      <tr class="header">
+        <td></td>
+        <%= (7..21).map { |m| [(content_tag :td, "#{m}h"),(content_tag :td, "#{m}h")] }.flatten.join.html_safe %>
+      </tr>
+      <tr class="header">
+        <td></td>
+        <%= (7..21).map { |m| [(content_tag :td, "0m"),(content_tag :td, "30m")] }.flatten.join.html_safe %>
+      </tr>
+      <tr class="spacer">
+        <td></td>
+        <%= (7..21).map { |m| [(content_tag :td, ""),(content_tag :td, "")] }.flatten.join.html_safe %>
+      </tr>
+      <tr class="time">
+        <td class="row-header">
+          <span><%= Date.today.strftime('%A') %></span></br>
+          <%= Date.today.strftime('%d of %B') %>
+        </td>
+        <%= (7..21).map { |m| [(content_tag :td, ""),(content_tag :td, "")] }.flatten.join.html_safe %>
+      </tr>
+    </table>
+    <% @reservations.each do |r| %>
+        <%= render partial: "event", locals: {r: r} %> 
+    <% end %>
   </div>
-  <% end %>
-  <% end %>
-</div>
+
+</section>

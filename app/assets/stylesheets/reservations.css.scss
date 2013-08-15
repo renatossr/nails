@@ -2,9 +2,116 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+// variables
+
+$row_header: 100px;
+$hour_header: 24px;
+$number_half_hours: 30;
+
+#calendar {
+  .day {
+
+    margin-bottom: 20px;
+    position: relative;
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      font-family: "Lucida Grande", arial, helvetica, sans-serif;
+
+      td {
+        font-size: 10px;
+        padding: 0;
+        width: $hour_header;
+        height: 40px;
+        color: #CCC;
+      }
+
+      tr {
+        &.header{
+
+          td{
+            border: 0 solid transparent;
+            text-align: center;
+            height: 15px;
+          }
+        }
+
+        &.spacer {
+          td {
+            border: 0;
+            height: 5px;
+          }
+        }
+
+        &.time {
+          td{
+            border: 1px solid #B4DEC3;
+            border-left: 0;
+            background: #C4FFDA;
+
+            &:nth-child(0n+2) {
+                border-left: 1px solid #EEE;
+                border-top-left-radius: 5px; 
+                border-bottom-left-radius: 5px;
+            }
+
+            &:last-child {
+                border-right-style: solid;
+                border-bottom-right-radius: 5px; 
+                border-top-right-radius: 5px; 
+            }
+
+            &.row-header{
+              width: $row-header;
+              background: none;
+              color: #666;
+              padding-right: 10px;
+              text-align: right;
+              border: 0;
+
+              span {
+                font-weight: bold;
+              }
+            }
+          }
+        }
+      } // End table
+    }
+
+    .event {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      top: 35px;
+      height: 40px;
+      font-size: 10px;
+      line-height: 150%;
+      border-radius: 3px;
+
+      &.reservation{
+        background: #F58C9F;
+        border: solid 1px #B3364D;
+        color: #96293D;
+      }
+
+      &.not-available {
+        background-color: #BBB;
+        border: 1px solid #888;
+      }
+
+      a{
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
 #reservations .calendar {
   border-collapse: collapse;
-  width: 50%;
+//  width: $calendar_width;
 
   td, th {
     font-family: "Lucida Grande", arial, helvetica, sans-serif;
