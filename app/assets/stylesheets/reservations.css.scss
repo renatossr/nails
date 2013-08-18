@@ -24,7 +24,7 @@ $number_half_hours: 30;
         padding: 0;
         width: $hour_header;
         height: 40px;
-        color: #CCC;
+        color: #AAA;
       }
 
       tr {
@@ -39,7 +39,7 @@ $number_half_hours: 30;
 
         &.spacer {
           td {
-            border: 0;
+            border: 0 solid transparent;
             height: 5px;
           }
         }
@@ -48,10 +48,10 @@ $number_half_hours: 30;
           td{
             border: 1px solid #B4DEC3;
             border-left: 0;
-            background: #C4FFDA;
+            background: #D1EDCE;
 
             &:nth-child(0n+2) {
-                border-left: 1px solid #EEE;
+                border-left: 1px solid #B4DEC3;
                 border-top-left-radius: 5px; 
                 border-bottom-left-radius: 5px;
             }
@@ -96,7 +96,7 @@ $number_half_hours: 30;
       }
 
       &.not-available {
-        background-color: #BBB;
+        background: image_url("stripe_not_available.png") #BBB repeat fixed;
         border: 1px solid #888;
       }
 

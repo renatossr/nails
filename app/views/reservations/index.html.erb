@@ -27,4 +27,31 @@
     <% end %>
   </div>
 
+  <div class="day">
+    <table>
+      <tr class="header">
+        <td></td>
+        <%= (7..21).map { |m| [(content_tag :td, "#{m}h"),(content_tag :td, "#{m}h")] }.flatten.join.html_safe %>
+      </tr>
+      <tr class="header">
+        <td></td>
+        <%= (7..21).map { |m| [(content_tag :td, "0m"),(content_tag :td, "30m")] }.flatten.join.html_safe %>
+      </tr>
+      <tr class="spacer">
+        <td></td>
+        <%= (7..21).map { |m| [(content_tag :td, ""),(content_tag :td, "")] }.flatten.join.html_safe %>
+      </tr>
+      <tr class="time">
+        <td class="row-header">
+          <span><%= Date.today.strftime('%A') %></span></br>
+          <%= Date.today.strftime('%d of %B') %>
+        </td>
+        <%= (7..21).map { |m| [(content_tag :td, ""),(content_tag :td, "")] }.flatten.join.html_safe %>
+      </tr>
+    </table>
+    <% @occupied.each do |r| %>
+        <%= render partial: "event_occupied", locals: {r: r} %> 
+    <% end %>
+  </div>
+
 </section>

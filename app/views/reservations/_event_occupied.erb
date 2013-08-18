@@ -1,5 +1,5 @@
-<%=  content_tag :div, 
-                 r.id, 
-                 class:"event #{r.kind.underscore.dasherize}",
+<%=  content_tag :div,
+                 '',
+                 class:"event not-available",
                  style:"left: #{Reservation.web_horizontal_position(r)}px; width: #{Reservation.web_size(r)}px;"
 %>

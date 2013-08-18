@@ -1,6 +1,7 @@
 class ReservationsController < ApplicationController
   def index
-  	@reservations = Reservation.only_of_day(Date.today).status_different_than("Canceled").with_default_ordering
+  	@reservations = Reservation.only_of_day(Date.today).not_canceled.with_default_ordering
+    @occupied = Reservation.only_of_day(Date.today).not_canceled.with_default_ordering.occupied
   end
 
   def show
