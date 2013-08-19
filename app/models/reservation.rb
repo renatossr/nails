@@ -13,6 +13,12 @@
 #
 
 class Reservation < ActiveRecord::Base
+  
+  # --------------------------- Constants ----------------------------------
+  RESERVATION_PIXEL_SIZE = 25
+  DAY_LABEL_PIXEL_SIZE = 110
+
+
   attr_accessible :description, :start_time, :end_time, :kind
 
 
@@ -136,13 +142,13 @@ class Reservation < ActiveRecord::Base
     # Calculates starting position of graphical representation in the browser
     def web_horizontal_position (r)
       s = (r.instance_of? Reservation) ? r.start_time : r[0]
-      110 + ( (s - (s.beginning_of_day+7.hours) ) / (30*60) )*25 # 110px for label and 25px per 30 minutes in browser
+      DAY_LABEL_PIXEL_SIZE + ( (s - (s.beginning_of_day+7.hours) ) / (0.5.hours) ) * RESERVATION_PIXEL_SIZE
     end
 
     # Calculates size of graphical representation in the browser
     def web_size (r)
       d = (r.instance_of? Reservation) ? r.duration : ( r[1] - r[0] )
-      25 * d / (30*60) # 25px per 30 minutes in browser
+      RESERVATION_PIXEL_SIZE * d / (0.5.hours)
     end
 
   end

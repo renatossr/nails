@@ -50,16 +50,20 @@ $number_half_hours: 30;
             border-left: 0;
             background: #D1EDCE;
 
+            &:hover {
+              background: #187318;
+            }
+
             &:nth-child(0n+2) {
-                border-left: 1px solid #B4DEC3;
-                border-top-left-radius: 5px; 
-                border-bottom-left-radius: 5px;
+              border-left: 1px solid #B4DEC3;
+              border-top-left-radius: 5px; 
+              border-bottom-left-radius: 5px;
             }
 
             &:last-child {
-                border-right-style: solid;
-                border-bottom-right-radius: 5px; 
-                border-top-right-radius: 5px; 
+              border-right-style: solid;
+              border-bottom-right-radius: 5px; 
+              border-top-right-radius: 5px; 
             }
 
             &.row-header{
