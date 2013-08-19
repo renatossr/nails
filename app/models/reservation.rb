@@ -122,7 +122,7 @@ class Reservation < ActiveRecord::Base
       start_t, end_t = nil
       all.each do |r|
         start_t = r.start_time if (start_t == nil) || (r.start_time > end_t)
-        end_t = r.end_time
+        end_t = r.end_time if (end_t == nil) || (r.end_time > end_t)
         oc_temp[start_t] << end_t
       end
       oc_temp
