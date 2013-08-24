@@ -19,14 +19,14 @@ class Reservation < ActiveRecord::Base
   DAY_LABEL_PIXEL_SIZE = 110
 
 
-  attr_accessible :description, :start_time, :end_time, :kind
+  attr_accessible :description, :start_time, :end_time, :kind, :status
 
 
   # --------------------------- Validations ----------------------------------
   validates :start_time, 	presence: true
   validates :end_time,		presence: true
   validates_inclusion_of :kind, :in => proc { Reservation.kinds_of_reservation }
-  validate :cannot_have_conflicts, :if => :is_reservation_and_has_conflicts?
+  validate :cannot_have_conflicts, :if => :is_reservation?
 
 
   # --------------------------- Callbacks ----------------------------------
@@ -37,7 +37,7 @@ class Reservation < ActiveRecord::Base
   scope :only_of_day, 				    ->(day) { where('start_time BETWEEN ? AND ?', day.beginning_of_day, day.end_of_day) }
   scope :only_of_period, 			    ->(start_day, end_day) { where('start_time BETWEEN ? AND ?', start_day.beginning_of_day, end_day.end_of_day) }
   scope :only_of_kind, 				    ->(kind) { where('kind = ?', kind) }
-  scope :status_different_than,   ->(status) { where('status <> ?', status) }
+  scope :status_different_than,   ->(status) { where("status <> ? OR status = ''", status) }
   scope :not_canceled,            ->() { self.status_different_than('Canceled') }
   scope :conflicts_with, 			    ->(reservation) { Reservation.where('(start_time >= ? AND start_time <= ?) OR (end_time >= ? AND end_time <= ?)', reservation.start_time, reservation.end_time, reservation.start_time, reservation.end_time) }
 
@@ -118,7 +118,7 @@ class Reservation < ActiveRecord::Base
     def occupied
       occupied = []
       oc_temp = merge_events
-      oc_temp.each {|k,h| occupied << [k,h.last] }
+      oc_temp.each {|k,h| occupied << Reservation.new(start_time: k, end_time: h.last[0], kind: h.last[1]) }
       occupied
     end
 
@@ -129,7 +129,7 @@ class Reservation < ActiveRecord::Base
       all.each do |r|
         start_t = r.start_time if (start_t == nil) || (r.start_time > end_t)
         end_t = r.end_time if (end_t == nil) || (r.end_time > end_t)
-        oc_temp[start_t] << end_t
+        oc_temp[start_t] << [end_t, r.kind]
       end
       oc_temp
     end
@@ -141,13 +141,13 @@ class Reservation < ActiveRecord::Base
 
     # Calculates starting position of graphical representation in the browser
     def web_horizontal_position (r)
-      s = (r.instance_of? Reservation) ? r.start_time : r[0]
+      s = r.start_time
       DAY_LABEL_PIXEL_SIZE + ( (s - (s.beginning_of_day+7.hours) ) / (0.5.hours) ) * RESERVATION_PIXEL_SIZE
     end
 
     # Calculates size of graphical representation in the browser
     def web_size (r)
-      d = (r.instance_of? Reservation) ? r.duration : ( r[1] - r[0] )
+      d = r.duration
       RESERVATION_PIXEL_SIZE * d / (0.5.hours)
     end
 

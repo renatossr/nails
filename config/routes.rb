@@ -2,6 +2,7 @@ Nails::Application.routes.draw do
 
   resources :reservations
   get "reservations" => 'reservations#index'
+  get "reservations/date/:date" => 'reservations#get_day'
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

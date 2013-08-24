@@ -87,20 +87,20 @@ $number_half_hours: 30;
       position: absolute;
       margin: 0;
       padding: 0;
-      top: 35px;
+      top: 45px;
       height: 40px;
       font-size: 10px;
       line-height: 150%;
       border-radius: 3px;
+      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHklEQVQIW2NkQAU+jEh8HyB7C0wAzAFJggTgHJAAAFXuA1E5qtLyAAAAAElFTkSuQmCC) #BBB repeat fixed;
 
       &.reservation{
-        background: #F58C9F;
+        background-color: #F58C9F;
         border: solid 1px #B3364D;
         color: #96293D;
       }
 
       &.not-available {
-        background: image_url("stripe_not_available.png") #BBB repeat fixed;
         border: 1px solid #888;
       }
 
@@ -111,74 +111,4 @@ $number_half_hours: 30;
       }
     }
   }
-}
-
-#reservations .calendar {
-  border-collapse: collapse;
-//  width: $calendar_width;
-
-  td, th {
-    font-family: "Lucida Grande", arial, helvetica, sans-serif;
-    font-size: 10px;
-    padding: 0 2px;
-    border: 1px solid #CCC;
-  }
-
-  th {
-    background: #DDD;
-    color: #666;
-    text-align: center;
-    width: 14.2857142857143%;
-  }
-
-  td {
-    background: #FFF;
-    color: #777;
-    vertical-align: top;
-    font-size: 16px;
-
-    &.day_header{
-    	text-align: center;
-    	background: #DDD;
-    	font-size: 10px;
-    	&.today{ background-color: #D7F2FF; }
-    }
-  }
-
-  .notmonth, .notmonth a { color: #CCC; }
-  .today { background-color: #D7F2FF; }
-}
-
-.reservation{
-  background: #F58C9F;
-  border: solid 1px #B3364D;
-  margin: 5px 0;
-  padding: 5px;
-  color: #96293D;
-  font-size: 10px;
-  line-height: 150%;
-  border-radius: 3px;
-
-  a{
-    text-decoration: none;
-    color: white;
-    font-weight: bold;
-  }
-}
-
-#reservations #month {
-  margin: 0;
-  padding-bottom: 10px;
-  text-align: center;
-  font-size: 22px;
-  a {
-    text-decoration: none;
-    padding: 0 10px;
-    color: #999;
-  }
-}
-
-#reservations ul {
-  font-size: 11px;
-  padding-left: 20px;
 }

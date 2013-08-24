@@ -1,57 +1,37 @@
 <section id="calendar">
 
-  <div class="day">
-    <table>
-      <tr class="header">
-        <td></td>
-        <%= (7..21).map { |m| [(content_tag :td, "#{m}h"),(content_tag :td, "#{m}h")] }.flatten.join.html_safe %>
-      </tr>
-      <tr class="header">
-        <td></td>
-        <%= (7..21).map { |m| [(content_tag :td, "0m"),(content_tag :td, "30m")] }.flatten.join.html_safe %>
-      </tr>
-      <tr class="spacer">
-        <td></td>
-        <%= (7..21).map { |m| [(content_tag :td, ""),(content_tag :td, "")] }.flatten.join.html_safe %>
-      </tr>
-      <tr class="time">
-        <td class="row-header">
-          <span><%= Date.today.strftime('%A') %></span></br>
-          <%= Date.today.strftime('%d of %B') %>
-        </td>
-        <%= (7..21).map { |m| [(content_tag :td, ""),(content_tag :td, "")] }.flatten.join.html_safe %>
-      </tr>
-    </table>
-    <% @reservations.each do |r| %>
-        <%= render partial: "event", locals: {r: r} %> 
-    <% end %>
-  </div>
+  <div ng-controller="ReservationCtrl" data-ng-init="init()">
 
-  <div class="day">
-    <table>
-      <tr class="header">
-        <td></td>
-        <%= (7..21).map { |m| [(content_tag :td, "#{m}h"),(content_tag :td, "#{m}h")] }.flatten.join.html_safe %>
-      </tr>
-      <tr class="header">
-        <td></td>
-        <%= (7..21).map { |m| [(content_tag :td, "0m"),(content_tag :td, "30m")] }.flatten.join.html_safe %>
-      </tr>
-      <tr class="spacer">
-        <td></td>
-        <%= (7..21).map { |m| [(content_tag :td, ""),(content_tag :td, "")] }.flatten.join.html_safe %>
-      </tr>
-      <tr class="time">
-        <td class="row-header">
-          <span><%= Date.today.strftime('%A') %></span></br>
-          <%= Date.today.strftime('%d of %B') %>
-        </td>
-        <%= (7..21).map { |m| [(content_tag :td, ""),(content_tag :td, "")] }.flatten.join.html_safe %>
-      </tr>
-    </table>
-    <% @occupied.each do |r| %>
-        <%= render partial: "event_occupied", locals: {r: r} %> 
-    <% end %>
+    <div infinite-scroll="loadMore()" infinite-scroll-distance='1' infinite-scroll-immediate-check='true'>
+      <div ng-repeat="day in days" class="day">
+        <table>
+          <tr class="header">
+            <td></td>
+            <td ng-repeat-start="hour in hours">{{hour}}h</td>
+            <td ng-repeat-end>{{hour}}h</td>
+          </tr>
+          <tr class="header">
+            <td></td>
+            <td ng-repeat-start="hour in hours">0m</td>
+            <td ng-repeat-end>30m</td>
+          </tr>
+          <tr class="spacer">
+            <td></td>
+            <td ng-repeat-start="hour in hours"></td>
+            <td ng-repeat-end></td>
+          </tr>
+          <tr class="time">
+            <td class="row-header">
+              <span>{{day.toLocaleDateString("en-US", weekday_options)}}</span></br>
+              {{day.toLocaleDateString("en-US", date_options)}}
+            </td>
+            <td ng-repeat-start="hour in hours"></td>
+            <td ng-repeat-end></td>
+          </tr>
+        </table>
+        <div ng-repeat="reservation in reservations[day]" ng-class="reservation.class" class="event" ng-style="{'left': reservation.left_position + 'px', 'width': reservation.width + 'px'}">{{reservation.id}}</div>
+      </div>
+    </div>
   </div>
 
 </section>
