@@ -34,12 +34,12 @@ class Reservation < ActiveRecord::Base
 
 
   # --------------------------- Scopes ----------------------------------
-  scope :only_of_day, 				    ->(day) { where('start_time BETWEEN ? AND ?', day.beginning_of_day, day.end_of_day) }
-  scope :only_of_period, 			    ->(start_day, end_day) { where('start_time BETWEEN ? AND ?', start_day.beginning_of_day, end_day.end_of_day) }
-  scope :only_of_kind, 				    ->(kind) { where('kind = ?', kind) }
+  scope :only_of_day,             ->(day) { where('start_time BETWEEN ? AND ?', day.beginning_of_day, day.end_of_day) }
+  scope :only_of_period,          ->(start_day, end_day) { where('start_time BETWEEN ? AND ?', start_day.beginning_of_day, end_day.end_of_day) }
+  scope :only_of_kind,            ->(kind) { where('kind = ?', kind) }
   scope :status_different_than,   ->(status) { where("status <> ? OR status = ''", status) }
   scope :not_canceled,            ->() { self.status_different_than('Canceled') }
-  scope :conflicts_with, 			    ->(reservation) { Reservation.where('(start_time >= ? AND start_time <= ?) OR (end_time >= ? AND end_time <= ?)', reservation.start_time, reservation.end_time, reservation.start_time, reservation.end_time) }
+  scope :conflicts_with,          ->(reservation) { Reservation.where('(start_time > ? AND start_time < ?) OR (end_time > ? AND end_time < ?)', reservation.start_time, reservation.end_time, reservation.start_time, reservation.end_time) }
 
 
   # --------------------------- Methods ----------------------------------
@@ -114,24 +114,19 @@ class Reservation < ActiveRecord::Base
       grouped
     end
 
-    # Returns occupied slots based on a collection of reservations
-    def occupied
-      occupied = []
-      oc_temp = merge_events
-      oc_temp.each {|k,h| occupied << Reservation.new(start_time: k, end_time: h.last[0], kind: h.last[1]) }
-      occupied
-    end
-
     # Merge event times
-    def merge_events
-      oc_temp = Hash.new {|h,k| h[k] = [] }
-      start_t, end_t = nil
+    def merged
+      merged = []
       all.each do |r|
-        start_t = r.start_time if (start_t == nil) || (r.start_time > end_t)
-        end_t = r.end_time if (end_t == nil) || (r.end_time > end_t)
-        oc_temp[start_t] << [end_t, r.kind]
+        # Push reservation into array every time that the start_time of record is larger than reservation's start_time
+        if merged.empty? || ( r.start_time.to_i > merged.last.end_time.to_i )
+          merged << Reservation.new
+          merged.last.start_time = r.start_time # Reservation start_time only set at the beginning of each group
+          merged.last.kind = r.kind
+        end
+        merged.last.end_time = r.end_time if (r.end_time.to_i > merged.last.end_time.to_i) # Reservation end_time set at the beginning of each group or if end_time of record is larger than reservation's end_time
       end
-      oc_temp
+      merged
     end
 
     # Returns the default ordering

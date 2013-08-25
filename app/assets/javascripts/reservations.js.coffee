@@ -1,11 +1,15 @@
 
 app = angular.module("Nails", ["ngResource", "infinite-scroll"])
 
-app.factory "Reservation", ["$resource", ($resource) ->
-  $resource("/reservations/date/:date.json", {date: "@date"})
+app.factory "Reservations", ["$resource", ($resource) ->
+  $resource("/reservations/date/:date:format", {date: "@date"})
 ]
 
-@ReservationCtrl = ["$scope", "Reservation", ($scope, Reservation) ->
+app.factory "Reservation", ["$resource", ($resource) ->
+  $resource("/reservations/:id", {id: "@id"})
+]
+
+@ReservationCtrl = ["$scope", "Reservations", "Reservation", ($scope, Reservations, Reservation) ->
   $scope.reservations = []
   $scope.days = []
   $scope.hours = [7..21]
@@ -32,6 +36,31 @@ app.factory "Reservation", ["$resource", ($resource) ->
     return days
 
   $scope.updateReservations = (day) ->
-    $scope.reservations[day] = Reservation.query({date: day.toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"})})
+    $scope.reservations[day] = Reservations.query({date: day.toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"}), format: ".json"})
+
+  $scope.addReservation = (day, reservation) ->
+    if reservation
+      reservation.status = "Reserved"
+      r = Reservation.save(reservation
+        (r) ->
+          $scope.updateReservations(day)
+        (response) ->
+          console.log(response.data.errors)
+      )
+
+  $scope.addReservationByClick = (day, hour, minute) ->
+    reservation = {}
+    d = day.toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"})
+    start_time = new Date(Date.parse(d + " " + hour + ":" + minute + ":00"))
+    end_time = new Date(start_time.getTime() + (30*60*1000))
+    reservation.start_time = start_time
+    reservation.end_time = end_time
+    reservation.status = "Reserved"
+    $scope.addReservation(day, reservation)
+    
+
+  $scope.test = (day, hour, minute) ->
+    day = day.toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"})
+    console.log(day + '|' + hour + ':' + minute)
 
 ]

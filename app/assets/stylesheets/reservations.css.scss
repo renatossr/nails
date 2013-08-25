@@ -13,6 +13,12 @@ $number_half_hours: 30;
 
     margin-bottom: 20px;
     position: relative;
+    clear: both;
+
+    .schedule {
+      float: left;
+      margin-right: 20px;
+    }
 
     table {
       border-collapse: separate;
@@ -81,6 +87,10 @@ $number_half_hours: 30;
           }
         }
       } // End table
+    }
+
+    .input-data {
+      float: left;
     }
 
     .event {

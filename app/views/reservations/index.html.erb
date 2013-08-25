@@ -1,35 +1,44 @@
 <section id="calendar">
 
   <div ng-controller="ReservationCtrl" data-ng-init="init()">
-
     <div infinite-scroll="loadMore()" infinite-scroll-distance='1' infinite-scroll-immediate-check='true'>
       <div ng-repeat="day in days" class="day">
-        <table>
-          <tr class="header">
-            <td></td>
-            <td ng-repeat-start="hour in hours">{{hour}}h</td>
-            <td ng-repeat-end>{{hour}}h</td>
-          </tr>
-          <tr class="header">
-            <td></td>
-            <td ng-repeat-start="hour in hours">0m</td>
-            <td ng-repeat-end>30m</td>
-          </tr>
-          <tr class="spacer">
-            <td></td>
-            <td ng-repeat-start="hour in hours"></td>
-            <td ng-repeat-end></td>
-          </tr>
-          <tr class="time">
-            <td class="row-header">
-              <span>{{day.toLocaleDateString("en-US", weekday_options)}}</span></br>
-              {{day.toLocaleDateString("en-US", date_options)}}
-            </td>
-            <td ng-repeat-start="hour in hours"></td>
-            <td ng-repeat-end></td>
-          </tr>
-        </table>
-        <div ng-repeat="reservation in reservations[day]" ng-class="reservation.class" class="event" ng-style="{'left': reservation.left_position + 'px', 'width': reservation.width + 'px'}">{{reservation.id}}</div>
+        <div class="schedule">
+          <table>
+            <tr class="header">
+              <td></td>
+              <% (7..21).each do |h| %>
+                <td><%= h %>h</td>
+                <td><%= h %>h</td>
+              <% end %>
+            </tr>
+            <tr class="header">
+              <td></td>
+              <% (7..21).each do %>
+                <td>0m</td>
+                <td>30m</td>
+              <% end %>
+            </tr>
+            <tr class="spacer">
+              <td></td>
+              <% (7..21).each do %>
+                <td></td>
+                <td></td>
+              <% end %>
+            </tr>
+            <tr class="time">
+              <td class="row-header">
+                <span>{{day.toLocaleDateString("en-US", weekday_options)}}</span></br>
+                {{day.toLocaleDateString("en-US", date_options)}}
+              </td>
+              <% (7..21).each do |h| %>
+                <td ng-click="addReservationByClick(day, '<%= h.to_s.rjust(2, '0') %>', '00')"></td>
+                <td ng-click="addReservationByClick(day, '<%= h.to_s.rjust(2, '0') %>', '30')"></td>
+              <% end %>
+            </tr>
+          </table>
+          <div ng-repeat="reservation in reservations[day]" ng-class="reservation.class" class="event" ng-style="{'left': reservation.left_position + 'px', 'width': reservation.width + 'px'}">{{reservation.id}}</div>
+        </div>
       </div>
     </div>
   </div>
