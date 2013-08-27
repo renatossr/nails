@@ -2,11 +2,11 @@
 app = angular.module("Nails", ["ngResource", "infinite-scroll"])
 
 app.factory "Reservations", ["$resource", ($resource) ->
-  $resource("/reservations/date/:date:format", {date: "@date"})
+  $resource("api/reservations/date/:date", {date: "@date"})
 ]
 
 app.factory "Reservation", ["$resource", ($resource) ->
-  $resource("/reservations/:id", {id: "@id"})
+  $resource("api/reservations")
 ]
 
 @ReservationCtrl = ["$scope", "Reservations", "Reservation", ($scope, Reservations, Reservation) ->
@@ -36,31 +36,30 @@ app.factory "Reservation", ["$resource", ($resource) ->
     return days
 
   $scope.updateReservations = (day) ->
-    $scope.reservations[day] = Reservations.query({date: day.toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"}), format: ".json"})
+    $scope.reservations[day] = Reservations.query({date: $scope.formatDate(day)})
 
   $scope.addReservation = (day, reservation) ->
-    if reservation
-      reservation.status = "Reserved"
-      r = Reservation.save(reservation
-        (r) ->
-          $scope.updateReservations(day)
-        (response) ->
-          console.log(response.data.errors)
-      )
+    r = Reservation.save(reservation
+      (resource) ->
+        $scope.reservations[day].push(resource)
+      (response) ->
+        console.log(response.status)
+        console.log(response.data)
+    )
 
   $scope.addReservationByClick = (day, hour, minute) ->
     reservation = {}
-    d = day.toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"})
+    d = $scope.formatDate(day)
     start_time = new Date(Date.parse(d + " " + hour + ":" + minute + ":00"))
     end_time = new Date(start_time.getTime() + (30*60*1000))
     reservation.start_time = start_time
     reservation.end_time = end_time
+    reservation.kind = "Reservation"
     reservation.status = "Reserved"
     $scope.addReservation(day, reservation)
     
 
-  $scope.test = (day, hour, minute) ->
-    day = day.toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"})
-    console.log(day + '|' + hour + ':' + minute)
+  $scope.formatDate = (day) ->
+    return day = day.toLocaleDateString("en-US", {year: "numeric", month: "short", day: "numeric"})
 
 ]

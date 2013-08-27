@@ -25,7 +25,6 @@ end
 
 gem 'jquery-rails'
 gem 'rabl'
-gem 'oj'
 
 group :development do
   gem 'annotate', '2.5.0'
