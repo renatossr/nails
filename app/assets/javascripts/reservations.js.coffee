@@ -14,6 +14,7 @@ app.factory "Reservation", ["$resource", ($resource) ->
   $scope.days = []
   DAY_LABEL_PIXEL_SIZE = 110
   RESERVATION_PIXEL_SIZE = 25
+  ONE_HOUR = 60*60*1000 # One hour in miliseconds
 
   $scope.init = () ->
     $scope.initializeDates()
@@ -23,7 +24,7 @@ app.factory "Reservation", ["$resource", ($resource) ->
     day = new Date
     day = new Date(day.getFullYear(), day.getMonth(), day.getDate(), 0, 0, 0, 0)
     for i in [0..9]
-      day = new Date(day.getTime() + (24*60*60*1000))
+      day = new Date(day.getTime() + (24*ONE_HOUR))
       $scope.updateDay(day)
 
 
@@ -40,14 +41,17 @@ app.factory "Reservation", ["$resource", ($resource) ->
 
   $scope.loadMore = () ->
     last_day = $scope.days[$scope.days.length - 1]
-    day = new Date(last_day.getTime() + (24*60*60*1000))
+    day = new Date(last_day.getTime() + (24*ONE_HOUR))
     $scope.updateDay(day)
 
 
   $scope.addReservation = (day, reservation) ->
+    arr = []
     r = Reservation.save(reservation
       (resource) ->
-        $scope.reservations[day].push(resource)
+        arr[0] = resource
+        arr = $scope.renderPrepare(arr)
+        $scope.reservations[day].push(arr[0])
       (response) ->
         console.log(response.status)
         console.log(response.data.errors)
@@ -57,7 +61,7 @@ app.factory "Reservation", ["$resource", ($resource) ->
   $scope.addReservationByClick = (day, hour, minute) ->
     reservation = {}
     start_time = new Date(day.getFullYear(), day.getMonth(), day.getDate(), hour, minute, 0, 0)
-    end_time = new Date(start_time.getTime() + (30*60*1000))
+    end_time = new Date(start_time.getTime() + (0.5*ONE_HOUR))
     reservation.start_time = start_time
     reservation.end_time = end_time
     reservation.kind = "Reservation"
@@ -101,14 +105,14 @@ app.factory "Reservation", ["$resource", ($resource) ->
 
 
   $scope.eventLeftPosition = (r) ->
-    s = new Date(r.start_time).getTime()
-    b = new Date(r.start_time).setHours(0,0,0,0)
-    return DAY_LABEL_PIXEL_SIZE + ( (s - (b+7*60*60*1000) ) / (0.5*60*60*1000) ) * RESERVATION_PIXEL_SIZE
+    startTime = new Date(r.start_time).getTime()
+    beginningOfDay = new Date(r.start_time).setHours(0,0,0,0)
+    return DAY_LABEL_PIXEL_SIZE + ( (startTime - (beginningOfDay + 7*ONE_HOUR) ) / (0.5*ONE_HOUR) ) * RESERVATION_PIXEL_SIZE
 
 
   $scope.eventWidth = (r) ->
-    d = Date.parse(r.end_time) - Date.parse(r.start_time)
-    return RESERVATION_PIXEL_SIZE * d / (0.5*60*60*1000)
+    duration = Date.parse(r.end_time) - Date.parse(r.start_time)
+    return RESERVATION_PIXEL_SIZE * duration / (0.5*ONE_HOUR)
 
 
   $scope.treatEvents = (arr) ->
