@@ -11,6 +11,7 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
+//= require string
 //= require angular
 //= require angular-resource
 //= require ng-infinite-scroll

@@ -11,7 +11,30 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130810041117) do
+ActiveRecord::Schema.define(:version => 20130830220645) do
+
+  create_table "establishments", :force => true do |t|
+    t.string   "name"
+    t.string   "address"
+    t.string   "address_2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "country"
+    t.string   "zip_code"
+    t.string   "lat"
+    t.string   "long"
+    t.string   "phone"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "positions", :force => true do |t|
+    t.string   "name"
+    t.string   "function"
+    t.integer  "establishment_id"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
 
   create_table "reservations", :force => true do |t|
     t.datetime "start_time"
@@ -21,6 +44,9 @@ ActiveRecord::Schema.define(:version => 20130810041117) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.string   "status"
+    t.integer  "position_id"
   end
+
+  add_index "reservations", ["position_id"], :name => "index_reservations_on_position_id"
 
 end

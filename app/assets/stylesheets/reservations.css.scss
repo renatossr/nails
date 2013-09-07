@@ -18,6 +18,7 @@ $number_half_hours: 30;
     .schedule {
       float: left;
       margin-right: 20px;
+      margin-bottom: 20px;
     }
 
     table {
@@ -52,16 +53,16 @@ $number_half_hours: 30;
 
         &.time {
           td{
-            border: 1px solid #B4DEC3;
+            border: 1px solid transparent;
             border-left: 0;
-            background: #E7F2E6;
+            background: #B5FFE5;
 
             &:hover {
-              background: #C8DEC5;
+              background: #5DFCC5;
             }
 
             &:nth-child(0n+2) {
-              border-left: 1px solid #B4DEC3;
+              border-left: 1px solid transparent;
               border-top-left-radius: 5px; 
               border-bottom-left-radius: 5px;
             }
@@ -79,6 +80,8 @@ $number_half_hours: 30;
               padding-right: 10px;
               text-align: right;
               border: 0;
+              font-size: 14px;
+              letter-spacing: -1px;
 
               span {
                 font-weight: bold;
@@ -102,16 +105,17 @@ $number_half_hours: 30;
       font-size: 10px;
       line-height: 150%;
       border-radius: 3px;
-      background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHklEQVQIW2NkQAU+jEh8HyB7C0wAzAFJggTgHJAAAFXuA1E5qtLyAAAAAElFTkSuQmCC) #BBB repeat fixed;
 
       &.reservation{
-        background-color: #F58C9F;
-        border: solid 1px #B3364D;
+        background-color: #FFC9E4;
+        border: solid 1px transparent;
         color: #96293D;
       }
 
       &.not-available {
-        border: 1px solid #888;
+        border: 1px solid transparent;
+        background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAHklEQVQIW2NkQAWSjEh8SSD7OUwAzAFJggTgHJAAAEkuAx5OdRJCAAAAAElFTkSuQmCC) #F7FFC9 repeat fixed;
+
       }
 
       a{

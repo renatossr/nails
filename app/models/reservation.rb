@@ -10,16 +10,18 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  status      :string(255)
+#  position_id :integer
 #
 
 class Reservation < ActiveRecord::Base
   
+  attr_accessible :description, :start_time, :end_time, :kind, :status
+  belongs_to :position
+
+
   # --------------------------- Constants ----------------------------------
   RESERVATION_PIXEL_SIZE = 25
   DAY_LABEL_PIXEL_SIZE = 110
-
-
-  attr_accessible :description, :start_time, :end_time, :kind, :status
 
 
   # --------------------------- Validations ----------------------------------
@@ -114,36 +116,20 @@ class Reservation < ActiveRecord::Base
       grouped
     end
 
-    # Merge event times
-    def merged
-      merged = []
-      all.each do |r|
-        # Push reservation into array every time that the start_time of record is larger than reservation's start_time
-        if merged.empty? || ( r.start_time.to_i > merged.last.end_time.to_i )
-          merged << Reservation.new
-          merged.last.start_time = r.start_time # Reservation start_time only set at the beginning of each group
-          merged.last.kind = r.kind
-        end
-        merged.last.end_time = r.end_time if (r.end_time.to_i > merged.last.end_time.to_i) # Reservation end_time set at the beginning of each group or if end_time of record is larger than reservation's end_time
-      end
-      merged
+    # Groups the reservations by kind - One reservation fills all the intervals between start and end time.
+    def grouped_by_kind
+      grouped = Hash.new {|h,k| h[k] = [] }
+      all.each { |r| grouped[r.kind] << r }
+      grouped
+    end
+
+    def me
+      all.each { |r| print r.kind }      
     end
 
     # Returns the default ordering
     def with_default_ordering
       order(:start_time)
-    end
-
-    # Calculates starting position of graphical representation in the browser
-    def web_horizontal_position (r)
-      s = r.start_time
-      DAY_LABEL_PIXEL_SIZE + ( (s - (s.beginning_of_day+7.hours) ) / (0.5.hours) ) * RESERVATION_PIXEL_SIZE
-    end
-
-    # Calculates size of graphical representation in the browser
-    def web_size (r)
-      d = r.duration
-      RESERVATION_PIXEL_SIZE * d / (0.5.hours)
     end
 
   end

@@ -10,6 +10,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  status      :string(255)
+#  position_id :integer
 #
 
 require 'spec_helper'

@@ -1,12 +1,16 @@
 Nails::Application.routes.draw do
 
-  namespace :api, defaults: {format: 'json'} do
+  namespace :api, defaults: { format: 'json' } do
     resources :reservations
     get "reservations/date/:date" => 'reservations#get_day'
+    resources :establishments
   end
 
   resources :reservations
   get "reservations" => 'reservations#index'
+
+  resources :establishments
+  resources :positions
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

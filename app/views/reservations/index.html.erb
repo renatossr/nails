@@ -28,8 +28,7 @@
             </tr>
             <tr class="time">
               <td class="row-header">
-                <span>{{day.toLocaleDateString("en-US", weekday_options)}}</span></br>
-                {{day.toLocaleDateString("en-US", date_options)}}
+                <span ng-no-bindable>{{day | date:'EEE' | filter:formatWeekday}} {{day | date:'d/MM'}}</span>
               </td>
               <% (7..21).each do |h| %>
                 <td ng-click="addReservationByClick(day, '<%= h.to_s.rjust(2, '0') %>', '00')"></td>
