@@ -36,7 +36,7 @@
               <% end %>
             </tr>
           </table>
-          <div ng-repeat="reservation in reservations[day]" ng-class="reservation.class" class="event" ng-style="{'left': reservation.left_position + 'px', 'width': reservation.width + 'px'}">{{reservation.id}}</div>
+          <div ng-repeat="reservation in reservations[day]" ng-class="reservation.class" class="event" ng-style="{'left': reservation.left_position + 'px', 'width': reservation.duration + 'px'}">{{reservation.id}}</div>
         </div>
       </div>
     </div>

@@ -82,16 +82,18 @@ app.factory "Reservation", ["$resource", ($resource) ->
     merged = []
     for r in arr
       mergedLast = merged[merged.length - 1]
+
       # Push reservation into array every time that the start_time of record is larger than reservation's start_time
-      if merged.length == 0 || (Date.parse(r.start_time) > Date.parse(mergedLast.end_time))
+      if merged.length == 0 || (new Date(r.start_time).getTime() > new Date(mergedLast.end_time).getTime())
         reservation = {}
         reservation.end_time = 0
         merged.push(reservation)
         # Reservation start_time only set at the beginning of each group
         merged[merged.length - 1].start_time = r.start_time
         merged[merged.length - 1].kind = r.kind
+
       # Reservation end_time set at the beginning of each group or if end_time of record is larger than reservation's end_time
-      if Date.parse(r.end_time) > Date.parse(merged[merged.length - 1].end_time)
+      if (new Date(r.end_time).getTime()) > (new Date(merged[merged.length - 1].end_time).getTime())
         merged[merged.length - 1].end_time = r.end_time
     return merged
 
@@ -100,7 +102,7 @@ app.factory "Reservation", ["$resource", ($resource) ->
     for r in arr
       r.class = S(r.kind).dasherize().chompLeft('-').s
       r.left_position = $scope.eventLeftPosition(r)
-      r.width = $scope.eventWidth(r)
+      r.duration = $scope.eventWidth(r)
     return arr
 
 
@@ -111,14 +113,40 @@ app.factory "Reservation", ["$resource", ($resource) ->
 
 
   $scope.eventWidth = (r) ->
-    duration = Date.parse(r.end_time) - Date.parse(r.start_time)
+    start = new Date(r.start_time).getTime()
+    end = new Date(r.end_time).getTime()
+    duration = end - start
     return RESERVATION_PIXEL_SIZE * duration / (0.5*ONE_HOUR)
+
+
+  $scope.groupByKind = (arr) ->
+    grouped = {}
+    for r in arr
+      if !grouped[r.kind]
+        grouped[r.kind] = []
+      grouped[r.kind].push(r)
+    return grouped
+
+
+  $scope.groupEvents = (arr) ->
+    grouped = []
+    arr = $scope.groupByKind(arr)
+    for r of arr
+      grouped.push($scope.mergeEvents(arr[r]))
+    grouped = $scope.flatten(grouped)
+    return grouped
 
 
   $scope.treatEvents = (arr) ->
     eventArray = []
-    eventArray = $scope.mergeEvents(arr)
+    eventArray = $scope.groupEvents(arr)
     eventArray = $scope.renderPrepare(eventArray)
     return eventArray
+
+
+  $scope.flatten = (a) ->
+    if a.length is 0 then return []
+    a.reduce (lhs, rhs) -> lhs.concat rhs
+
 
 ]

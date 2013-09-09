@@ -116,7 +116,7 @@ class Reservation < ActiveRecord::Base
       grouped
     end
 
-    # Groups the reservations by kind - One reservation fills all the intervals between start and end time.
+    # Groups the reservations by kind
     def grouped_by_kind
       grouped = Hash.new {|h,k| h[k] = [] }
       all.each { |r| grouped[r.kind] << r }
